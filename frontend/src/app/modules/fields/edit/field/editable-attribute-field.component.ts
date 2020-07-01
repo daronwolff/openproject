@@ -150,8 +150,7 @@ export class EditableAttributeFieldComponent extends UntilDestroyedMixin impleme
   }
 
   public get isEditable() {
-    const fieldSchema = this.resource.schema[this.fieldName] as IFieldSchema;
-    return this.resource.isAttributeEditable(this.fieldName) && fieldSchema && fieldSchema.writable;
+    return this.resource.isAttributeEditable(this.fieldName);
   }
 
   public activateIfEditable(event:JQuery.TriggeredEvent) {
