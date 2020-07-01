@@ -109,8 +109,7 @@ module WorkPackages::Scopes
       # that neither have only manually scheduled children/descendants or would only be reachable via work packages for which
       # the before mentioned constraint is true are returned. The provided work package is always excluded.
       def fetch(work_packages)
-        # TODO: try to get rid of this
-        return [] if work_packages.empty?
+        return WorkPackage.none if work_packages.empty?
 
         sql = <<~SQL
           WITH

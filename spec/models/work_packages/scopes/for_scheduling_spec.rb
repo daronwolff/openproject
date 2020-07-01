@@ -109,6 +109,13 @@ describe WorkPackages::Scopes::ForScheduling, 'allowed scope' do
         .to be_a ActiveRecord::Relation
     end
 
+    context 'for an empty array' do
+      it 'is empty' do
+        expect(described_class.fetch([]))
+          .to be_empty
+      end
+    end
+
     context 'for a work package with a predecessor' do
       let!(:existing_work_packages) { [predecessor] }
 
