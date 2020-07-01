@@ -179,16 +179,6 @@ export class WorkPackageBaseResource extends HalResource {
     return !(children && children.length > 0);
   }
 
-  /**
-   * Return whether the user in general has permission to edit the work package.
-   * This check is required, but not sufficient to check all attribute restrictions.
-   *
-   * Use +isAttributeEditable(property)+ for this case.
-   */
-  public get isEditable() {
-    return this.isNew || !!this.$links.update;
-  }
-
   public previewPath() {
     if (!this.isNew) {
       return this.pathHelper.api.v3.work_packages.id(this.id!).path;

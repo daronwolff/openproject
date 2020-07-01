@@ -158,6 +158,16 @@ export class HalResource {
   }
 
   /**
+   * Return whether the user in general has permission to edit the work package.
+   * This check is required, but not sufficient to check all attribute restrictions.
+   *
+   * Use +isAttributeEditable(property)+ for this case.
+   */
+  public get isEditable() {
+    return this.isNew || !!this.$links.update;
+  }
+
+  /**
    * Return whether the resource is editable with the user's permission
    * on the given resource package attribute.
    * In order to be editable, there needs to be an update link on the resource and the schema for
@@ -167,7 +177,7 @@ export class HalResource {
    */
   public isAttributeEditable(property:string):boolean {
     const fieldSchema = this.schema[property];
-    return this.$links.update && fieldSchema && fieldSchema.writable;
+    return this.isEditable && fieldSchema && fieldSchema.writable;
   }
 
   /**
