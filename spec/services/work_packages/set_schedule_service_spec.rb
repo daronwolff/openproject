@@ -41,9 +41,7 @@ describe WorkPackages::SetScheduleService do
   let(:instance) do
     described_class.new(user: user, work_package: work_package)
   end
-  let(:following) do
-    { [work_package] => [] }
-  end
+  let!(:following) { [] }
   let(:user) { FactoryBot.build_stubbed(:user) }
   let(:type) { FactoryBot.build_stubbed(:type) }
 
@@ -146,16 +144,14 @@ describe WorkPackages::SetScheduleService do
   subject { instance.call(attributes) }
 
   before do
-    results = (following.keys + following.values).flatten.uniq - [work_package]
-
     allow(WorkPackage)
       .to receive(:for_scheduling)
       .with([work_package])
-      .and_return(results)
+      .and_return(following)
 
-    allow(results)
+    allow(following)
       .to receive(:includes)
-      .and_return(results)
+      .and_return(following)
   end
   let(:attributes) { [:start_date] }
 
@@ -200,15 +196,8 @@ describe WorkPackages::SetScheduleService do
   end
 
   context 'with a single successor' do
-    let(:following) do
-      {
-        [work_package] => [following_work_package1],
-        [following_work_package1] => []
-      }
-    end
-
-    before do
-      following_work_package1
+    let!(:following) do
+      [following_work_package1]
     end
 
     context 'moving forward' do
@@ -476,11 +465,8 @@ describe WorkPackages::SetScheduleService do
       FactoryBot.build_stubbed(:stubbed_work_package)
     end
     let(:work_package_start_date) { Date.today - 5.days }
-    let(:following) do
-      {
-        [work_package] => [parent_work_package],
-        [parent_work_package] => []
-      }
+    let!(:following) do
+      [parent_work_package]
     end
 
     before do
@@ -499,18 +485,9 @@ describe WorkPackages::SetScheduleService do
   end
 
   context 'with a single successor having a parent' do
-    let(:following) do
-      {
-        [work_package] => [following_work_package1,
-                           parent_following_work_package1],
-        [following_work_package1,
-         parent_following_work_package1] => []
-      }
-    end
-
-    before do
-      following_work_package1
-      parent_following_work_package1
+    let!(:following) do
+      [following_work_package1,
+       parent_following_work_package1]
     end
 
     context 'moving forward' do
@@ -530,14 +507,10 @@ describe WorkPackages::SetScheduleService do
       let(:parent_follower1_start_date) { follower1_start_date }
       let(:parent_follower1_due_date) { follower1_due_date + 4.days }
 
-      let(:following) do
-        {
-          [work_package] => [following_work_package1,
-                             parent_following_work_package1,
-                             follower_sibling_work_package],
-          [following_work_package1,
-           parent_following_work_package1] => []
-        }
+      let!(:following) do
+        [following_work_package1,
+         parent_following_work_package1,
+         follower_sibling_work_package]
       end
 
       before do
@@ -643,14 +616,10 @@ describe WorkPackages::SetScheduleService do
       let(:parent_follower1_start_date) { follower1_start_date }
       let(:parent_follower1_due_date) { follower1_due_date + 4.days }
 
-      let(:following) do
-        {
-          [work_package] => [following_work_package1,
-                             parent_following_work_package1,
-                             follower_sibling_work_package],
-          [following_work_package1,
-           parent_following_work_package1] => []
-        }
+      let!(:following) do
+        [following_work_package1,
+         parent_following_work_package1,
+         follower_sibling_work_package]
       end
 
       before do
@@ -676,18 +645,9 @@ describe WorkPackages::SetScheduleService do
 
     let(:child_work_package) { stub_follower_child(following_work_package1, child_start_date, child_due_date) }
 
-    let(:following) do
-      {
-        [work_package] => [following_work_package1,
-                           child_work_package],
-        [following_work_package1,
-         child_work_package] => []
-      }
-    end
-
-    before do
-      following_work_package1
-      child_work_package
+    let!(:following) do
+      [following_work_package1,
+       child_work_package]
     end
 
     context 'moving forward' do
@@ -715,15 +675,10 @@ describe WorkPackages::SetScheduleService do
     let(:child1_work_package) { stub_follower_child(following_work_package1, child1_start_date, child1_due_date) }
     let(:child2_work_package) { stub_follower_child(following_work_package1, child2_start_date, child2_due_date) }
 
-    let(:following) do
-      {
-        [work_package] => [following_work_package1,
-                           child1_work_package,
-                           child2_work_package],
-        [following_work_package1,
-         child1_work_package,
-         child2_work_package] => []
-      }
+    let!(:following) do
+      [following_work_package1,
+       child1_work_package,
+       child2_work_package]
     end
 
     before do
@@ -813,21 +768,10 @@ describe WorkPackages::SetScheduleService do
     let(:follower3_start_date) { Date.today + 9.day }
     let(:follower3_due_date) { Date.today + 10.day }
 
-    let(:following) do
-      {
-        [work_package] => [following_work_package1,
-                           following_work_package2,
-                           following_work_package3],
-        [following_work_package1,
-         following_work_package2,
-         following_work_package3] => []
-      }
-    end
-
-    before do
-      following_work_package1
-      following_work_package2
-      following_work_package3
+    let!(:following) do
+      [following_work_package1,
+       following_work_package2,
+       following_work_package3]
     end
 
     context 'moving forward' do
@@ -902,24 +846,11 @@ describe WorkPackages::SetScheduleService do
                     following_work_package2 => follower4_delay_2,
                     following_work_package3 => follower4_delay_3)
     end
-    let(:following) do
-      {
-        [work_package] => [following_work_package1,
-                           following_work_package2,
-                           following_work_package3,
-                           following_work_package4],
-        [following_work_package1,
-         following_work_package2,
-         following_work_package3,
-         following_work_package4] => []
-      }
-    end
-
-    before do
-      following_work_package1
-      following_work_package2
-      following_work_package3
-      following_work_package4
+    let!(:following) do
+      [following_work_package1,
+       following_work_package2,
+       following_work_package3,
+       following_work_package4]
     end
 
     context 'moving forward' do
