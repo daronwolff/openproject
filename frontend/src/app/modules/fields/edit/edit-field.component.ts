@@ -67,7 +67,7 @@ export abstract class EditFieldComponent extends Field implements OnInit, OnDest
               readonly cdRef:ChangeDetectorRef,
               readonly injector:Injector) {
     super();
-    this.schema = this.schema || this.change.schema[this.name];
+    this.schema = this.schema || this.change.propertySchema(this.name);
 
     if (this.change.state) {
       this.change.state
@@ -76,14 +76,14 @@ export abstract class EditFieldComponent extends Field implements OnInit, OnDest
           this.untilDestroyed()
         )
         .subscribe((change) => {
-          const fieldSchema = change.schema[this.name];
+          const fieldSchema = change.propertySchema(this.name);
 
           if (!fieldSchema) {
             return handler.deactivate(false);
           }
 
           this.change = change;
-          this.schema = change.schema[this.name];
+          this.schema = change.propertySchema(this.name);
           this.initialize();
           this.cdRef.markForCheck();
         });

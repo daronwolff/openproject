@@ -31,5 +31,7 @@ export class WorkPackageChangeset extends ResourceChangeset<WorkPackageResource>
     super.setNewDefaultFor(key, val);
   }
 
-
+  public propertySchema(property:string) {
+    return this.projectedResource.propertySchema(property, this.schema);
+  }
 }

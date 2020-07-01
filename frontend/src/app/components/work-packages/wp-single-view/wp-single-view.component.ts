@@ -318,7 +318,7 @@ export class WorkPackageSingleViewComponent extends UntilDestroyedMixin implemen
         return;
       }
 
-      if (!resource.schema[fieldName]) {
+      if (!resource.propertySchema(fieldName)) {
         debugLog('Unknown field for current schema', fieldName);
         return;
       }
@@ -347,12 +347,13 @@ export class WorkPackageSingleViewComponent extends UntilDestroyedMixin implemen
       multiple: false
     };
 
+    // TODO: Check if this is still necessary
     if (resource.schema.hasOwnProperty('date')) {
       object.field = this.displayField(resource, 'date');
       object.name = 'date';
     } else {
-      object.field = this.displayField(resource, 'startDate');
-      object.name = 'startDate';
+      object.field = this.displayField(resource, 'combinedDate');
+      object.name = 'combinedDate';
     }
 
     return object;
@@ -390,7 +391,7 @@ export class WorkPackageSingleViewComponent extends UntilDestroyedMixin implemen
     return this.displayFieldService.getField(
       resource,
       name,
-      resource.schema[name],
+      resource.propertySchema(name),
       { container: 'single-view', injector: this.injector, options: {} }
     ) as DisplayField;
   }

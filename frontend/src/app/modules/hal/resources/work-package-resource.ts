@@ -215,6 +215,7 @@ export class WorkPackageBaseResource extends HalResource {
   }
 
   public getSchemaName(name:string):string {
+    // TODO: check if this is still required
     if (this.isMilestone && (name === 'startDate' || name === 'dueDate')) {
       return 'date';
     } else {
@@ -312,6 +313,33 @@ export class WorkPackageBaseResource extends HalResource {
     }
 
     return state.value!;
+  }
+
+  /**
+   * Returns the part of the schema relevant for the provided property.
+   * Will look up the associated schema to do so but if the caller decides so, it will also
+   * look inside a provided schema.
+   *
+   * We use it to support the virtual attribute 'combinedDate' which is the combination of the three
+   * attributes 'startDate', 'dueDate' and 'scheduleManually'. That combination exists only in the front end
+   * and not on the native schema. As a property needs to be writable for us to allow the user editing,
+   * we need to mark the writability positively if any of the combined properties are writable.
+   *
+   * @param property the schema part is desired for
+   * @param schemaOverride a schema overriding the already associated schema.
+   */
+  public propertySchema(property:string, schemaOverride?:SchemaResource) {
+    let schema = schemaOverride || this.schema;
+
+    if (property === 'combinedDate') {
+      let combinedSchema = Object.assign({}, schema['startDate']);
+      combinedSchema.writable = schema['startDate'].writable || schema['dueDate'].writable || schema['scheduleManually'].writable;
+      return combinedSchema;
+    } else if (this.isMilestone && (property === 'startDate' || property === 'dueDate')) {
+      return schema['date'];
+    } else {
+      return schema[property];
+    }
   }
 
   /**

@@ -24,7 +24,7 @@ export class CellBuilder {
       td.classList.add('-max');
     }
 
-    const schema = workPackage.schema[attribute];
+    const schema = workPackage.propertySchema(attribute);
     if (schema && schema.type === 'User') {
       td.classList.add('-contains-avatar');
     }

@@ -176,8 +176,8 @@ export class HalResource {
    * @param property
    */
   public isAttributeEditable(property:string):boolean {
-    const fieldSchema = this.schema[property];
-    return this.isEditable && fieldSchema && fieldSchema.writable;
+    const propertySchema = this.propertySchema(property);
+    return this.isEditable && propertySchema && propertySchema.writable;
   }
 
   /**

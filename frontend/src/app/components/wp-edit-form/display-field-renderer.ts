@@ -54,7 +54,7 @@ export class DisplayFieldRenderer<T extends HalResource = HalResource> {
                           placeholder?:string):[DisplayField|null, HTMLSpanElement] {
     const span = document.createElement('span');
     const schemaName = this.getSchemaName(resource, change, name);
-    const fieldSchema = resource.schema[schemaName];
+    const fieldSchema = resource.propertySchema(name);
 
     // If the resource does not have that field, return an empty
     // span (e.g., for the table).
@@ -104,7 +104,7 @@ export class DisplayFieldRenderer<T extends HalResource = HalResource> {
     }
 
     // In the single view, start and end date are shown in a combined date field
-    if (this.container === 'single-view' && (name === 'startDate')) {
+    if (this.container === 'single-view' && (name === 'combinedDate')) {
       return new CombinedDateDisplayField(name, context) as DisplayField;
     }
 

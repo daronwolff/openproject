@@ -199,7 +199,7 @@ export class ResourceChangeset<T extends HalResource|{ [key:string]:unknown; } =
    * @param key
    */
   public isWritable(key:string):boolean {
-    const fieldSchema = this.schema[key] as IFieldSchema|null;
+    const fieldSchema = this.propertySchema(key) as IFieldSchema|null;
     return !!(fieldSchema && fieldSchema.writable);
   }
 
@@ -313,6 +313,10 @@ export class ResourceChangeset<T extends HalResource|{ [key:string]:unknown; } =
     return this.form$.getValueOr(this.pristineResource).schema;
   }
 
+  public propertySchema(property:string) {
+    return this.schema[property];
+  }
+
   /**
    * Access some promised value
    * that should be cached for the lifetime duration of the form.
@@ -343,7 +347,7 @@ export class ResourceChangeset<T extends HalResource|{ [key:string]:unknown; } =
     }
 
     _.each(this.changeset.all, (val:ChangeItem, key:string) => {
-      const fieldSchema:IFieldSchema|undefined = this.schema[key];
+      const fieldSchema:IFieldSchema|undefined = this.propertySchema(key);
       if (!(typeof (fieldSchema) === 'object' && fieldSchema.writable)) {
         debugLog(`Trying to write ${key} but is not writable in schema`);
         return;
@@ -441,7 +445,7 @@ export class ResourceChangeset<T extends HalResource|{ [key:string]:unknown; } =
    */
   protected setNewDefaults(form:FormResource) {
     _.each(form.payload, (val:unknown, key:string) => {
-      const fieldSchema:IFieldSchema|undefined = this.schema[key];
+      const fieldSchema:IFieldSchema|undefined = this.propertySchema(key);
       if (!(typeof (fieldSchema) === 'object' && fieldSchema.writable)) {
         return;
       }
