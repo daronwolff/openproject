@@ -62,7 +62,7 @@ describe WorkPackages::SetScheduleService do
 
     allow(work_package)
       .to receive(:follows_relations)
-            .and_return relations
+      .and_return relations
 
     work_package
   end
@@ -78,7 +78,7 @@ describe WorkPackages::SetScheduleService do
 
     allow(child)
       .to receive(:parent_relation)
-            .and_return relation
+      .and_return relation
 
     child
   end
@@ -146,16 +146,16 @@ describe WorkPackages::SetScheduleService do
   subject { instance.call(attributes) }
 
   before do
-    following.each do |wp, results|
-      allow(WorkPackage)
-        .to receive(:hierarchy_tree_following)
-              .with(wp)
-              .and_return(results)
+    results = (following.keys + following.values).flatten.uniq - [work_package]
 
-      allow(results)
-        .to receive(:includes)
-              .and_return(results)
-    end
+    allow(WorkPackage)
+      .to receive(:for_scheduling)
+      .with([work_package])
+      .and_return(results)
+
+    allow(results)
+      .to receive(:includes)
+      .and_return(results)
   end
   let(:attributes) { [:start_date] }
 
