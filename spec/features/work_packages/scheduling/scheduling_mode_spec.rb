@@ -105,7 +105,7 @@ describe 'scheduling mode',
     combined_field.save!
     work_packages_page.expect_and_dismiss_notification message: 'Successful update.'
 
-    work_package.reload
+    wp.reload
     expect(wp.schedule_manually).to eq true
   end
 end
