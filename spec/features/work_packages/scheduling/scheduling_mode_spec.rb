@@ -95,7 +95,7 @@ describe 'scheduling mode',
 
   it 'can toggle the scheduling mode through the date modal' do
     expect(wp.schedule_manually).to eq false
-    combined_field.activate!
+    combined_field.activate!(expect_open: false)
     combined_field.expect_active!
 
     combined_field.expect_scheduling_mode manually: false
